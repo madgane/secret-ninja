@@ -6,8 +6,8 @@
 void getQRDecomposition(cmatrix_t *aMatrix,cmatrix_t *qMatrix,cmatrix_t *rMatrix)
 {
 	float nVecB;
-	uint16_t iRow,iCol,nSize;
-	cmatrix_t vecA,vecB,vecC,matC,matD,matH;
+	uint16_t iRow,iCol,nSize,xRow,xCol;
+	cmatrix_t vecA,vecB,vecBH,matC,matH,matB;
 
 	matrixCopy(aMatrix,rMatrix);
 	eyeMatrix(qMatrix,aMatrix->_rows);
@@ -22,6 +22,8 @@ void getQRDecomposition(cmatrix_t *aMatrix,cmatrix_t *qMatrix,cmatrix_t *rMatrix
 		vecB._cols = 1;
 		vecB._rows = aMatrix->_rows - iCol;
 		vecB._data = memalloc_2D(vecB._rows,vecA._cols);
+
+		eyeMatrix(&matB,aMatrix->_rows);
 
 		nVecB = 0;
 		for (iRow = iCol;iRow < aMatrix->_rows;iRow ++)
@@ -49,13 +51,51 @@ void getQRDecomposition(cmatrix_t *aMatrix,cmatrix_t *qMatrix,cmatrix_t *rMatrix
 			vecB._data[iRow][0] = vecA._data[iRow][0] - vecB._data[iRow][0];
 		}
 
-		hermMatrix(&vecB,&vecC);
-		matrixMult(&vecC,&vecA,&matC);
-		matrixMult(&vecC,&vecB,&matD);
+		hermMatrix(&vecB,&vecBH);
+		matrixMult(&vecBH,&vecA,&matC);
 		getMatrixInverse(&matC,&matH);
-		matrixMult(&matD,&matH,&matC);
+		matrixMult(&vecB,&matH,&matC);
+		matrixMult(&matC,&vecBH,&matH);
 
-		//H = I - H;
+		for (xRow = 0;xRow < matH._rows;xRow ++)
+		{
+			for (xCol = 0;xCol < matH._cols;xCol ++)
+			{
+				if (xRow == xCol)
+				{
+					matH._data[xRow][xCol] = 1.0 - matH._data[xRow][xCol];
+				}
+				else
+				{
+					matH._data[xRow][xCol] = -matH._data[xRow][xCol];
+				}
+			}
+		}
+
+		if (!iCol)
+		{
+			matrixCopy(&matH,&matB);
+		}
+		else
+		{
+			for (xCol = iCol;xCol < matB._cols;xCol ++)
+			{
+				for (xRow = iCol;xRow < matB._rows;xRow ++)
+				{
+					matB._data[xRow][xCol] = matH._data[xRow - iCol][xCol - iCol];
+				}
+			}
+		}
+
+		hermMatrix(&matB,&matH);
+		matrixMult(qMatrix,&matH,&matC);
+		matrixCopy(&matC,qMatrix);
+
+		matrixMult(&matB,rMatrix,&matC);
+		matrixCopy(&matC,rMatrix);
+
+		freeMatrix(&vecA);freeMatrix(&vecB);freeMatrix(&vecBH);
+		freeMatrix(&matC);freeMatrix(&matB);freeMatrix(&matH);
 
 	}
 }
@@ -139,10 +179,10 @@ void getNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix)
 		}
 	}
 
-	freeMatrix(&pMatrix,pMatrix._rows);
-	freeMatrix(&qMatrix,qMatrix._rows);
-	freeMatrix(&iMatrix,iMatrix._rows);
-	freeMatrix(&ahMatrix,ahMatrix._rows);
+	freeMatrix(&pMatrix);
+	freeMatrix(&qMatrix);
+	freeMatrix(&iMatrix);
+	freeMatrix(&ahMatrix);
 }
 
 float getNormOfVector(cmatrix_t *aMatrix)

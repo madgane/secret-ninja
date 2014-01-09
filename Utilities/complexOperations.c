@@ -183,10 +183,10 @@ void eyeMatrix(cmatrix_t *iMatrix,uint16_t nRows)
 	}
 }
 
-void freeMatrix(cmatrix_t *fMatrix,uint16_t nRows)
+void freeMatrix(cmatrix_t *fMatrix)
 {
 	uint16_t iRow;
-	for (iRow = 0;iRow < nRows;iRow ++)
+	for (iRow = 0;iRow < fMatrix->_rows;iRow ++)
 	{
 		free(fMatrix->_data[iRow]);
 	}

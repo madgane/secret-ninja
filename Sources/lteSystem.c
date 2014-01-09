@@ -32,13 +32,13 @@ int main()
 
 	displaySystemInfo();
 
-	aMatrix._rows = 3;aMatrix._cols = 1;
-	bMatrix._rows = 4;bMatrix._cols = 4;
+	aMatrix._rows = 4;aMatrix._cols = 4;
+	//bMatrix._rows = 4;bMatrix._cols = 4;
 
 	randomizeDataMatrix(&aMatrix);
 	//randomizeDataMatrix(&bMatrix);
 
-	//displayMatrix(&aMatrix);
+	displayMatrix(&aMatrix);
 	//displayMatrix(&bMatrix);
 
 	//hermMatrix(&bMatrix,&cMatrix);
@@ -57,15 +57,21 @@ int main()
 
 	//getMatrixInverse(&aMatrix,&bMatrix);
 
-	displayMatrix(&aMatrix);
-	getNullMatrix(&aMatrix,&bMatrix);
+	//displayMatrix(&aMatrix);
+	//getNullMatrix(&aMatrix,&bMatrix);
+
+	//displayMatrix(&bMatrix);
+
+	//matrixMult(&bMatrix,&aMatrix,&cMatrix);
+
+	//displayMatrix(&cMatrix);
+
+
+	getQRDecomposition(&aMatrix,&bMatrix,&cMatrix);
 
 	displayMatrix(&bMatrix);
-
-	matrixMult(&bMatrix,&aMatrix,&cMatrix);
-
 	displayMatrix(&cMatrix);
 
-	printf("Beautiful World !");
+
 	return 1;
 }

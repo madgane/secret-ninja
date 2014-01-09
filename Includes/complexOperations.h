@@ -14,7 +14,7 @@ fcomplex_t getMatrixDet(cmatrix_t *aMatrix);
 fcomplex_t detOfMatrix(uint16_t nRows,fcomplex_t **data);
 void matrixCopy(cmatrix_t *aMatrix,cmatrix_t *bMatrix);
 void eyeMatrix(cmatrix_t *iMatrix,uint16_t nRows);
-void freeMatrix(cmatrix_t *fMatrix,uint16_t nRows);
+void freeMatrix(cmatrix_t *fMatrix);
 void getColOfMatrix(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t refCol);
 
 #endif /* COMPLEXOPERATIONS_H_ */
