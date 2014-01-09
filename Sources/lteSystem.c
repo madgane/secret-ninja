@@ -6,6 +6,8 @@
 #include "complexOperations.h"
 #include "linearAlgebra.h"
 
+#include "time.h"
+
 int main()
 {
 	uint16_t cellID = 0,iFrameNo,iUser;
@@ -13,6 +15,8 @@ int main()
 	const uint16_t simUsers = 10;
 	userConfig_t *cUser;
 	fcomplex_t detVal;
+
+	clock_t t;
 
 	cmatrix_t aMatrix,bMatrix,cMatrix;
 	cmatrix_t uMatrix,dMatrix,vMatrix;
@@ -33,7 +37,7 @@ int main()
 
 	displaySystemInfo();
 
-	aMatrix._rows = 5;aMatrix._cols = 3;
+	aMatrix._rows = 5;aMatrix._cols = 5;
 	//bMatrix._rows = 4;bMatrix._cols = 4;
 
 	randomizeDataMatrix(&aMatrix);
@@ -55,20 +59,26 @@ int main()
 	//displayMatrix(&aMatrix);
 	//printf("%f,%f \n",crealf(detVal),cimagf(detVal));
 
-
-	//getMatrixInverse(&aMatrix,&bMatrix);
+	t = clock();
+	getMatrixInverse(&aMatrix,&bMatrix);
+	t = clock() - t;
+	printf("%d clicks, %f seconds \n\n",(int)t,((float) t)/CLOCKS_PER_SEC);
 
 	//displayMatrix(&aMatrix);
 	//getNullMatrix(&aMatrix,&bMatrix);
 
-	//displayMatrix(&bMatrix);
+	displayMatrix(&bMatrix);
 
 	//matrixMult(&bMatrix,&aMatrix,&cMatrix);
 
 	//displayMatrix(&cMatrix);
 
 
+	t = clock();
 	getSVD(&aMatrix,&uMatrix,&dMatrix,&vMatrix);
+	t = clock() - t;
+
+	printf("%d clicks, %f seconds \n\n",(int)t,((float) t)/CLOCKS_PER_SEC);
 
 	displayMatrix(&uMatrix);
 	displayMatrix(&dMatrix);

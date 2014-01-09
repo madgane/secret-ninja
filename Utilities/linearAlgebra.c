@@ -125,17 +125,20 @@ void getMatrixInverse(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
 	for (xCol = 0;xCol < aMatrix->_cols;xCol ++)
 	{
 		tempComplex = xMatrix->_data[xCol][xCol];
-		for (iCol = 0;iCol < xMatrix->_cols;iCol ++)
+		if (cabs(tempComplex) > 1e-6) /* to overcome precision issues of float */
 		{
-			xMatrix->_data[xCol][iCol] = xMatrix->_data[xCol][iCol] / tempComplex;
-		}
-		for (xRow = 0;xRow < xMatrix->_rows;xRow ++)
-		{
-			if (xRow == xCol) continue;
-			tempComplex = xMatrix->_data[xRow][xCol];
-			for (iCol = xCol;iCol < xMatrix->_cols;iCol ++)
+			for (iCol = 0;iCol < xMatrix->_cols;iCol ++)
 			{
-				xMatrix->_data[xRow][iCol] = xMatrix->_data[xRow][iCol] - tempComplex * xMatrix->_data[xCol][iCol];
+				xMatrix->_data[xCol][iCol] = xMatrix->_data[xCol][iCol] / tempComplex;
+			}
+			for (xRow = 0;xRow < xMatrix->_rows;xRow ++)
+			{
+				if (xRow == xCol) continue;
+				tempComplex = xMatrix->_data[xRow][xCol];
+				for (iCol = xCol;iCol < xMatrix->_cols;iCol ++)
+				{
+					xMatrix->_data[xRow][iCol] = xMatrix->_data[xRow][iCol] - tempComplex * xMatrix->_data[xCol][iCol];
+				}
 			}
 		}
 	}
