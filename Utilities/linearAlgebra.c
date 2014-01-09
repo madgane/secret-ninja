@@ -207,3 +207,40 @@ float getNormOfVector(cmatrix_t *aMatrix)
 	return sqrt(normValue);
 }
 
+void getSVD(cmatrix_t *xMatrix,cmatrix_t *uMatrix,cmatrix_t *dMatrix,cmatrix_t *vMatrix)
+{
+	uint16_t iIter = 1;
+	cmatrix_t tMatrix,tR,tQ,hR,X;
+	const uint16_t maxIterations = 12;
+
+	eyeMatrix(uMatrix,xMatrix->_rows);
+	eyeMatrix(vMatrix,xMatrix->_cols);
+
+	hermMatrix(xMatrix,&X);
+	getQRDecomposition(&X,&tQ,&tR);
+	matrixMult(vMatrix,&tQ,&tMatrix);
+	matrixCopy(&tMatrix,vMatrix);
+
+	while (iIter < maxIterations)
+	{
+		hermMatrix(&tR,&hR);
+		getQRDecomposition(&hR,&tQ,&tR);
+
+		if (iIter % 2)
+		{
+			matrixMult(uMatrix,&tQ,&tMatrix);
+			matrixCopy(&tMatrix,uMatrix);
+		}
+		else
+		{
+			matrixMult(vMatrix,&tQ,&tMatrix);
+			matrixCopy(&tMatrix,vMatrix);
+		}
+
+		iIter ++;
+	}
+
+	matrixCopy(&tR,dMatrix);
+	freeMatrix(&tMatrix);freeMatrix(&tR);freeMatrix(&tQ);freeMatrix(&hR);freeMatrix(&X);
+
+}

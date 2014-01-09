@@ -14,5 +14,6 @@ void getQRDecomposition(cmatrix_t *aMatrix,cmatrix_t *qMatrix,cmatrix_t *rMatrix
 void getMatrixInverse(cmatrix_t *aMatrix,cmatrix_t *bMatrix);
 void getNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix);
 float getNormOfVector(cmatrix_t *aMatrix);
+void getSVD(cmatrix_t *xMatrix,cmatrix_t *uMatrix,cmatrix_t *dMatrix,cmatrix_t *vMatrix);
 
 #endif /* LINEARALGEBRA_H_ */

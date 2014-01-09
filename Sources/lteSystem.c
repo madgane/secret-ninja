@@ -15,6 +15,7 @@ int main()
 	fcomplex_t detVal;
 
 	cmatrix_t aMatrix,bMatrix,cMatrix;
+	cmatrix_t uMatrix,dMatrix,vMatrix;
 
 	initializeSystem(&dlConfig,&sysConfig,cellID,4);
 	updateSystem(&dlConfig,&sysConfig,0);
@@ -32,7 +33,7 @@ int main()
 
 	displaySystemInfo();
 
-	aMatrix._rows = 4;aMatrix._cols = 4;
+	aMatrix._rows = 5;aMatrix._cols = 3;
 	//bMatrix._rows = 4;bMatrix._cols = 4;
 
 	randomizeDataMatrix(&aMatrix);
@@ -67,11 +68,11 @@ int main()
 	//displayMatrix(&cMatrix);
 
 
-	getQRDecomposition(&aMatrix,&bMatrix,&cMatrix);
+	getSVD(&aMatrix,&uMatrix,&dMatrix,&vMatrix);
 
-	displayMatrix(&bMatrix);
-	displayMatrix(&cMatrix);
-
+	displayMatrix(&uMatrix);
+	displayMatrix(&dMatrix);
+	displayMatrix(&vMatrix);
 
 	return 1;
 }
