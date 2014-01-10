@@ -234,7 +234,7 @@ void matrixAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix)
 	if (aMatrix->_rows != bMatrix->_rows)
 	{
 		printf("Unequal matrix sizes !");
-		exit(failed);
+		exit(false);
 	}
 
 	cMatrix->_rows = aMatrix->_rows;
@@ -262,7 +262,7 @@ void matrixAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
 	if (aMatrix->_rows != bMatrix->_rows)
 	{
 		printf("Unequal matrix sizes !");
-		exit(failed);
+		exit(false);
 	}
 
 	cMatrix = &pMatrix;
@@ -292,7 +292,7 @@ void matrixBottomAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix
 	if (aMatrix->_cols != bMatrix->_cols)
 	{
 		printf("Unequal matrix sizes !");
-		exit(failed);
+		exit(false);
 	}
 
 	cMatrix->_cols = aMatrix->_cols;
@@ -321,7 +321,7 @@ void matrixBottomAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
 	if (aMatrix->_cols != bMatrix->_cols)
 	{
 		printf("Unequal matrix sizes !");
-		exit(failed);
+		exit(false);
 	}
 
 	cMatrix = &pMatrix;

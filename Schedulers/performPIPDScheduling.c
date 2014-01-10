@@ -3,7 +3,7 @@
 #include "linearAlgebra.h"
 #include "complexOperations.h"
 
-void performSuccessiveProjections(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
+void performPIPDScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 {
 	fvector_t normVector;
 	cmatrix_t gMatrix,nMatrix,tMatrix;

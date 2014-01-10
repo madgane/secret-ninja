@@ -18,11 +18,7 @@ typedef enum {
 } portType_e;
 
 typedef enum {
-	ROUNDROBIN, GREEDY, SUCCPROJ
+	ROUNDROBIN, GREEDY, SUCCPROJ, PIPD
 } schedType_e;
-
-typedef enum {
-	failed = -1,success = 1
-} completionWay_e;
 
 #endif /* ENUMTYPES_H_ */

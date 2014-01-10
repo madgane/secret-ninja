@@ -9,5 +9,6 @@
 #include "stdio.h"
 #include "math.h"
 #include "string.h"
+#include "enumTypes.h"
 
 #endif /* LTESYSTEM_H_ */

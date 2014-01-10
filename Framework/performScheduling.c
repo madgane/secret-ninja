@@ -21,10 +21,15 @@ void performUserScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 			performSuccessiveProjections(sysConfig,dlConfig);
 			break;
 		}
+		case (PIPD) :
+		{
+			performPIPDScheduling(sysConfig,dlConfig);
+			break;
+		}
 		default :
 		{
 			printf("Unknown Scheduler Algorithm ! \n");
-			exit(failed);
+			exit(false);
 		}
 	}
 }

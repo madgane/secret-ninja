@@ -32,7 +32,7 @@ int main()
 	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
 	updateSystem(&dlConfig,&sysConfig,0);
 
-	sysConfig.schedType = GREEDY;
+	sysConfig.schedType = PIPD;
 
 	for (iUser = 0;iUser < simUsers;iUser ++)
 	{
@@ -54,7 +54,7 @@ int main()
 		printf("Total Cycles involved - %f Clocks and Time in msec - %f. \n ",(double)frequency.QuadPart,(elapTime * 1e3 / frequency.QuadPart));
 	}
 
-	return (success);
+	return (true);
 }
 
 
@@ -162,5 +162,5 @@ void testFunction()
 	//displayMatrix(&dMatrix);
 	//displayMatrix(&vMatrix);
 
-	exit(success);
+	exit(true);
 }
