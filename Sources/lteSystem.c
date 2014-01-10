@@ -32,7 +32,7 @@ int main()
 	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
 	updateSystem(&dlConfig,&sysConfig,0);
 
-	sysConfig.schedType = SUCCPROJ;
+	sysConfig.schedType = GREEDY;
 
 	for (iUser = 0;iUser < simUsers;iUser ++)
 	{
@@ -63,7 +63,7 @@ void testFunction()
 {
 	uint16_t cellID = 0,iFrameNo;
 	const uint16_t maxFrames = 10;
-	const uint16_t simUsers = 10;
+	const uint16_t simUsers = 100;
 	uint16_t nTransmit = 4,nReceive = 4;
 	uint16_t iSB,iUser;
 	userConfig_t *cUser;

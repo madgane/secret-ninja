@@ -215,7 +215,7 @@ void getSVD(cmatrix_t *xMatrix,cmatrix_t *uMatrix,cmatrix_t *dMatrix,cmatrix_t *
 {
 	uint16_t iIter = 1;
 	cmatrix_t tMatrix,tR,tQ,hR,X;
-	const uint16_t maxIterations = 12;
+	const uint16_t maxIterations = 6;
 
 	eyeMatrix(uMatrix,xMatrix->_rows);
 	eyeMatrix(vMatrix,xMatrix->_cols);

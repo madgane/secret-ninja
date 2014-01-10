@@ -17,8 +17,7 @@
 
 #define MAX_PORTS_OVER_PRB (2)
 
-#define MAX_SYSTEM_USERS (100)
-#define MAX_ACTIVE_USERS (100)
+#define MAX_ACTIVE_USERS (400)
 #define PING_PONG (2)
 
 /* Derived definitions */

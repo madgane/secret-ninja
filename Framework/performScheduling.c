@@ -13,6 +13,7 @@ void performUserScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 		}
 		case (GREEDY) :
 		{
+			performGreedyScheduling(sysConfig,dlConfig);
 			break;
 		}
 		case (SUCCPROJ) :
