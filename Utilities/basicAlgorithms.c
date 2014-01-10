@@ -4,7 +4,7 @@
 
 uint16_t maxEntry(fmatrix_t *gMatrix)
 {
-	uint16_t iIndex,maxIndex;
+	uint16_t iIndex,maxIndex = 0;
 	float maxValue = -100;
 
 	if (gMatrix->_cols == 1)
@@ -39,7 +39,7 @@ uint16_t maxEntry(fmatrix_t *gMatrix)
 
 uint16_t maxEntryv(fvector_t *gMatrix)
 {
-	uint16_t iIndex,maxIndex;
+	uint16_t iIndex,maxIndex = 0;
 	float maxValue = -100;
 
 	for (iIndex = 0;iIndex < gMatrix->_rows;iIndex ++)
