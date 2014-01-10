@@ -191,7 +191,6 @@ void freeMatrix(cmatrix_t *fMatrix)
 		free(fMatrix->_data[iRow]);
 	}
 	free(fMatrix->_data);
-	free(fMatrix);
 }
 
 void getColOfMatrix(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t refCol)

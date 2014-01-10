@@ -8,6 +8,7 @@
 
 #include "time.h"
 #include "performScheduling.h"
+#include "windows.h"
 
 #define DEBUG_TIMERS (10)
 
@@ -15,15 +16,18 @@ void testFunction();
 
 int main()
 {
-
 	uint16_t cellID = 0,iFrameNo,iUser;
 	const uint16_t maxFrames = 1;
-	const uint16_t simUsers = 100;
+	const uint16_t simUsers = 10;
 	uint16_t nTransmit = 4,nReceive = 1;
 	userConfig_t *cUser;
-	clock_t ticTimes[DEBUG_TIMERS];
-	clock_t tocTimes[DEBUG_TIMERS];
-	float elapTime;
+
+	double elapTime;
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER ticTimes[DEBUG_TIMERS];
+	LARGE_INTEGER tocTimes[DEBUG_TIMERS];
+
+	QueryPerformanceFrequency(&frequency);
 
 	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
 	updateSystem(&dlConfig,&sysConfig,0);
@@ -36,20 +40,18 @@ int main()
 		updateDLConfig_User(&dlConfig,cUser);
 	}
 
-	/* displayChannelMatrices(&sysConfig,&dlConfig); */
-
 	for (iFrameNo = 0;iFrameNo < maxFrames;iFrameNo ++)
 	{
 		updateSystem(&dlConfig,&sysConfig,iFrameNo);
 
-		ticTimes[0] = clock();
+		QueryPerformanceCounter(&ticTimes[0]);
 		performUserScheduling(&sysConfig,&dlConfig);
-		tocTimes[0] = clock();
+		QueryPerformanceCounter(&tocTimes[0]);
 
 		displayScheduledUsers(&sysConfig,&dlConfig);
 
-		elapTime = (float) tocTimes[0];
-		printf("Total Cycles involved - %f Clocks and Time in sec - %f. \n ",elapTime,(elapTime / (float)CLOCKS_PER_SEC));
+		elapTime = (float) tocTimes[0].QuadPart - (float) ticTimes[0].QuadPart;
+		printf("Total Cycles involved - %f Clocks and Time in msec - %f. \n ",(double)frequency.QuadPart,(elapTime * 1e3 / frequency.QuadPart));
 	}
 
 	return (success);
@@ -59,30 +61,65 @@ int main()
 
 void testFunction()
 {
-	uint16_t cellID = 0,iFrameNo,iUser;
-	const uint16_t maxFrames = 100;
+	uint16_t cellID = 0,iFrameNo;
+	const uint16_t maxFrames = 10;
 	const uint16_t simUsers = 10;
+	uint16_t nTransmit = 4,nReceive = 4;
+	uint16_t iSB,iUser;
 	userConfig_t *cUser;
 	fcomplex_t detVal;
-
-	clock_t t;
 
 	cmatrix_t aMatrix,bMatrix,cMatrix;
 	cmatrix_t uMatrix,dMatrix,vMatrix;
 
-	aMatrix._rows = 4;aMatrix._cols = 2;
-	bMatrix._rows = 3;bMatrix._cols = 1;
+	double elapTime;
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER ticTimes[DEBUG_TIMERS];
+	LARGE_INTEGER tocTimes[DEBUG_TIMERS];
 
-	randomizeDataMatrix(&aMatrix);
-	randomizeDataMatrix(&bMatrix);
+	QueryPerformanceFrequency(&frequency);
 
-	displayMatrix(&aMatrix);
-	getLeftNullMatrix(&aMatrix,&cMatrix);
-	matrixMult(&aMatrix,&cMatrix,&bMatrix);
+	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
+	updateSystem(&dlConfig,&sysConfig,0);
 
-	displayMatrix(&bMatrix);
+	for (iUser = 0;iUser < simUsers;iUser ++)
+	{
+		cUser = createDummyUser(iUser,nReceive,10);
+		updateDLConfig_User(&dlConfig,cUser);
+	}
 
-	printf("%f",getNormOfVector(&aMatrix));
+	QueryPerformanceCounter(&ticTimes[0]);
+	for (iSB = 0;iSB < sysConfig.nSBs;iSB ++)
+	{
+		for (iUser = 0;iUser < dlConfig.linkedUsers;iUser ++)
+		{
+			getSVD(&dlConfig.activeUsers[iUser]->channelMatrix[iSB],&uMatrix,&dMatrix,&vMatrix);
+		}
+	}
+	QueryPerformanceCounter(&tocTimes[0]);
+
+	elapTime = (float) tocTimes[0].QuadPart - (float) ticTimes[0].QuadPart;
+	printf("Total Cycles involved - %f Clocks and Time in msec - %f. \n ",(double)frequency.QuadPart,(elapTime * 1e3 / frequency.QuadPart));
+
+
+
+//	aMatrix._rows = 4;aMatrix._cols = 4;
+//	bMatrix._rows = 3;bMatrix._cols = 1;
+//
+//	randomizeDataMatrix(&aMatrix);
+//	randomizeDataMatrix(&bMatrix);
+//
+//	displayMatrix(&aMatrix);
+//	getLeftNullMatrix(&aMatrix,&cMatrix);
+//	matrixMult(&aMatrix,&cMatrix,&bMatrix);
+//
+//	displayMatrix(&bMatrix);
+//
+//	getQRDecomposition(&aMatrix,&bMatrix,&cMatrix);
+//
+//	getSVD(&aMatrix,&uMatrix,&dMatrix,&vMatrix);
+//
+//	printf("%f",getNormOfVector(&aMatrix));
 
 	//matrixAppendOwr(&aMatrix,&bMatrix);
 	//displayMatrix(&aMatrix);
