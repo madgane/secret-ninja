@@ -9,11 +9,11 @@ typedef struct {
 
 	uint8_t nPRBs;
 	uint8_t nSBs;
+	schedType_e schedType;
 
 }systemConfig_t;
 
 typedef struct {
-	bool_e isactive;
 	uint16_t userID;
 
 	cmatrix_t channelMatrix[N_SCHBLK_OVER_SF];
@@ -30,9 +30,11 @@ typedef struct {
 	uint16_t frameNumber;
 	userConfig_t *activeUsers[MAX_ACTIVE_USERS];
 
-	uint16_t maxUsers;
 	uint16_t linkedUsers;
+	uint16_t maxUsers;
 	dlframe_t *cFrame;
+
+	userConfig_t *schedUsers[N_SCHBLK_OVER_SF][MAX_MUX_USERS];
 
 }downlinkConfig_t;
 

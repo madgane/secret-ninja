@@ -190,21 +190,22 @@ void getNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix)
 
 float getNormOfVector(cmatrix_t *aMatrix)
 {
-	uint16_t iRow;
-	float normValue = 0;
-	cmatrix_t *tMatrix,tempMatrix;
+	uint16_t iRow,iCol;
+	float normValue = 0.0;
 
-	if (aMatrix->_cols != 1)
+	if (aMatrix->_cols == 1)
 	{
-		tMatrix = &tempMatrix;
-		hermMatrix(aMatrix,tMatrix);
+		for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+		{
+			normValue += (cabs(aMatrix->_data[iRow][0]) * cabs(aMatrix->_data[iRow][0]));
+		}
 	}
-	else
-		tMatrix = aMatrix;
-
-	for (iRow = 0;iRow < tMatrix->_rows;iRow ++)
+	else if (aMatrix->_rows == 1)
 	{
-		normValue += cabs(tMatrix->_data[iRow][0]) * cabs(tMatrix->_data[iRow][0]);
+		for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+		{
+			normValue += (cabs(aMatrix->_data[0][iCol]) * cabs(aMatrix->_data[0][iCol]));
+		}
 	}
 
 	return sqrt(normValue);
@@ -246,4 +247,39 @@ void getSVD(cmatrix_t *xMatrix,cmatrix_t *uMatrix,cmatrix_t *dMatrix,cmatrix_t *
 	matrixCopy(&tR,dMatrix);
 	freeMatrix(&tMatrix);freeMatrix(&tR);freeMatrix(&tQ);freeMatrix(&hR);freeMatrix(&X);
 
+}
+
+void getLeftNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix)
+{
+	uint16_t iRow,iCol;
+	cmatrix_t pMatrix,qMatrix,iMatrix,ahMatrix;
+
+	nMatrix->_cols = nMatrix->_rows = aMatrix->_cols;
+	nMatrix->_data = memalloc_2D(nMatrix->_rows,nMatrix->_cols);
+
+	hermMatrix(aMatrix,&ahMatrix);
+	matrixMult(aMatrix,&ahMatrix,&pMatrix);
+	getMatrixInverse(&pMatrix,&iMatrix);
+	matrixMult(&ahMatrix,&iMatrix,&pMatrix);
+	matrixMult(&pMatrix,aMatrix,&qMatrix);
+
+	for (iRow = 0;iRow < nMatrix->_rows;iRow ++)
+	{
+		for (iCol = 0;iCol < nMatrix->_rows;iCol ++)
+		{
+			if (iRow == iCol)
+			{
+				nMatrix->_data[iRow][iCol] = 1 - qMatrix._data[iRow][iCol];
+			}
+			else
+			{
+				nMatrix->_data[iRow][iCol] = -qMatrix._data[iRow][iCol];
+			}
+		}
+	}
+
+	freeMatrix(&pMatrix);
+	freeMatrix(&qMatrix);
+	freeMatrix(&iMatrix);
+	freeMatrix(&ahMatrix);
 }

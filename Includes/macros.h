@@ -23,6 +23,7 @@
 
 /* Derived definitions */
 
+#define MAX_MUX_USERS (4)
 #define N_PRB_OVER_SF (N_FFT_USED / N_SC_OVER_PRB)
 #define N_SCHBLK_OVER_SF (N_PRB_OVER_SF / N_PRB_OVER_SCHBLK)
 

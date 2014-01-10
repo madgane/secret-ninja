@@ -11,13 +11,17 @@ systemConfig_t sysConfig;
 void initializeSystem(downlinkConfig_t *dConfig,systemConfig_t *sConfig,uint16_t cellID,uint16_t nTxAntenna)
 {
 	uint32_t iUser;
+
 	dConfig->cellID = cellID;
 	dConfig->maxUsers = MAX_ACTIVE_USERS;
 	for (iUser = 0;iUser < dConfig->maxUsers;iUser ++)
 	{
 		dConfig->activeUsers[iUser] = NULL;
 	}
+
 	dConfig->frameNumber = 0;
+	dConfig->linkedUsers = 0;
+
 	sConfig->nPRBs = N_PRB_OVER_SF;
 	sConfig->nSBs = N_SCHBLK_OVER_SF;
 	sConfig->nTXAntenna = nTxAntenna;
@@ -35,9 +39,7 @@ userConfig_t* createNewUser(uint32_t userID, cmatrix_t **chnMatrix)
 		tempUser->channelMatrix[schBlk] = *chnMatrix[schBlk];
 	}
 
-	tempUser->isactive = true;
 	tempUser->userID = userID;
-
 	updateDLConfig_User(&dlConfig,tempUser);
 
 	return tempUser;
@@ -45,24 +47,51 @@ userConfig_t* createNewUser(uint32_t userID, cmatrix_t **chnMatrix)
 
 void updateDLConfig_User(downlinkConfig_t *dConfig,userConfig_t *cUser)
 {
-	uint16_t iUser;
+	bool_e foundUser = false;
+	int16_t iUser,emptyLoc = -1;
 	for (iUser = 0;iUser < dConfig->maxUsers;iUser ++)
 	{
-		if (dConfig->activeUsers[iUser] == NULL)
+		if (dConfig->activeUsers[iUser] != NULL)
 		{
-			dConfig->activeUsers[iUser] = cUser;
-			break;
+			if (dConfig->activeUsers[iUser]->userID == cUser->userID)
+			{
+				foundUser = true;
+				clearDLConfig_User(dConfig,cUser->userID);
+				dConfig->activeUsers[iUser] = cUser;
+			}
 		}
+		else
+		{
+			if (emptyLoc == -1)
+			{
+				emptyLoc = iUser;
+			}
+		}
+	}
+
+	if (foundUser == false)
+	{
+		dConfig->linkedUsers ++;
+		dConfig->activeUsers[emptyLoc] = cUser;
 	}
 }
 
 void clearDLConfig(downlinkConfig_t *dConfig)
 {
-	uint16_t iUser;
+	uint16_t iUser,iSB;
 	for (iUser = 0;iUser < dConfig->maxUsers;iUser ++)
 	{
-		dConfig->activeUsers[iUser] = (void *) 0;
+		if (dConfig->activeUsers[iUser] != NULL)
+		{
+			freeUser(dConfig->activeUsers[iUser]);
+		}
 	}
+	for (iSB = 0;iSB < sysConfig.nSBs;iSB ++)
+	{
+		free(dConfig->schedUsers[iSB]);
+	}
+	free(dConfig->schedUsers);
+	free(dConfig);
 }
 
 void clearDLConfig_User(downlinkConfig_t *dConfig,uint32_t userID)
@@ -70,12 +99,27 @@ void clearDLConfig_User(downlinkConfig_t *dConfig,uint32_t userID)
 	uint16_t iUser;
 	for (iUser = 0;iUser < dConfig->maxUsers;iUser ++)
 	{
-		if (dConfig->activeUsers[iUser]->userID == userID)
+		if (dConfig->activeUsers[iUser] != NULL)
 		{
-			dConfig->activeUsers[iUser] = (void *) 0;
-			break;
+			if (dConfig->activeUsers[iUser]->userID == userID)
+			{
+				dConfig->linkedUsers --;
+				freeUser(dConfig->activeUsers[iUser]);
+				break;
+			}
 		}
 	}
+}
+
+void freeUser(userConfig_t *cUser)
+{
+	uint16_t iSB;
+	for (iSB = 0;iSB < sysConfig.nSBs;iSB ++)
+	{
+		freeMatrix(&cUser->channelMatrix[iSB]);
+		freeMatrix(&cUser->precMatrices[iSB]);
+	}
+	free(cUser);
 }
 
 void updateSystem(downlinkConfig_t *dlConfig,systemConfig_t *sysConfig,uint16_t frameNo)
@@ -106,3 +150,19 @@ void displaySystemInfo()
 	printf("---------- End of system configuration information --------- \n");
 }
 
+void displayScheduledUsers(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
+{
+	uint16_t iSB,iUser;
+	for (iSB = 0;iSB < sysConfig->nSBs;iSB ++)
+	{
+		for (iUser = 0;iUser < MAX_MUX_USERS;iUser ++)
+		{
+			if (dlConfig->schedUsers[iSB][iUser] != NULL)
+			{
+				printf("%d,",dlConfig->schedUsers[iSB][iUser]->userID);
+			}
+		}
+		printf("\t");
+	}
+	printf("\n");
+}

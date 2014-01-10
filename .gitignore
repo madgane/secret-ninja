@@ -20,3 +20,5 @@
 .project
 .settings
 .cproject
+/Profiling
+/Release

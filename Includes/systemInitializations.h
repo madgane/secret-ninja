@@ -15,5 +15,7 @@ void clearDLConfig_User(downlinkConfig_t*,uint32_t);
 void updateSystem(downlinkConfig_t *,systemConfig_t *,uint16_t);
 void displayUserStructure(userConfig_t *cUser);
 void displaySystemInfo();
+void freeUser(userConfig_t *cUser);
+void displayScheduledUsers(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig);
 
 #endif /* SYSTEMINITIALIZATIONS_H_ */

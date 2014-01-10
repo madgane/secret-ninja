@@ -1,4 +1,5 @@
 
+#include "linearAlgebra.h"
 #include "supportingFunctions.h"
 #include "complexOperations.h"
 
@@ -36,7 +37,7 @@ userConfig_t* createDummyUser(uint16_t uID,uint16_t nRxAntenna,uint16_t backlogg
 	{
 		dummyUser->channelMatrix[iSchBlk]._rows = nRxAntenna;
 		dummyUser->channelMatrix[iSchBlk]._cols = sysConfig.nTXAntenna;
-		dummyUser->channelMatrix[iSchBlk]._data = cplxRandnMatrix(nRxAntenna,sysConfig.nTXAntenna);
+		randomizeDataMatrix(&dummyUser->channelMatrix[iSchBlk]);
 	}
 
 	return dummyUser;
@@ -55,6 +56,22 @@ void randomizeDataMatrix(cmatrix_t *aMatrix)
 			__real__ tempComplex = rand() / (float)(RAND_MAX + 1);
 			__imag__ tempComplex = rand() / (float)(RAND_MAX + 1);
 			aMatrix->_data[iRow][iCol] = (tempComplex * 2 - (1 + 1j)) / sqrt(2.0);
+		}
+	}
+}
+
+void displayChannelMatrices(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
+{
+	float norm;
+	uint16_t iSB,iUser;
+	for (iSB = 0;iSB < sysConfig->nSBs;iSB ++)
+	{
+		for (iUser = 0;iUser < dlConfig->linkedUsers;iUser ++)
+		{
+			printf("UserID - %d, SBlock - %d \n",dlConfig->activeUsers[iUser]->userID,iSB);
+			displayMatrix(&dlConfig->activeUsers[iUser]->channelMatrix[iSB]);
+			norm = getNormOfVector(&dlConfig->activeUsers[iUser]->channelMatrix[iSB]);
+			printf("Channel Norm - %f \n",norm);
 		}
 	}
 }

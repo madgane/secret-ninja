@@ -29,13 +29,30 @@ typedef struct {
 	uint8_t **_data;
 }smatrix_t;
 
-typedef enum {
-	true,
-	false
-} bool_e;
+typedef struct {
+	uint16_t _cols;
+	uint16_t _rows;
+	float **_data;
+}fmatrix_t;
 
-typedef enum {
-	PORT_0,	PORT_1,	PORT_2,	PORT_3, PORT_4,	PORT_5
-} portTypes_e;
+typedef struct {
+	uint16_t _rows;
+	fcomplex_t *_data;
+}cvector_t;
+
+typedef struct {
+	uint16_t _rows;
+	int32_t *_data;
+}ivector_t;
+
+typedef struct {
+	uint16_t _rows;
+	uint8_t *_data;
+}svector_t;
+
+typedef struct {
+	uint16_t _rows;
+	float *_data;
+}fvector_t;
 
 #endif /* DEFINES_H_ */

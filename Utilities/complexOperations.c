@@ -191,6 +191,7 @@ void freeMatrix(cmatrix_t *fMatrix)
 		free(fMatrix->_data[iRow]);
 	}
 	free(fMatrix->_data);
+	free(fMatrix);
 }
 
 void getColOfMatrix(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t refCol)
@@ -204,5 +205,144 @@ void getColOfMatrix(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t refCol)
 	{
 		bMatrix->_data[iRow][0] = aMatrix->_data[iRow][refCol];
 	}
+}
+
+void freeVector(cvector_t *fMatrix)
+{
+	free(fMatrix->_data);
+	free(fMatrix);
+}
+
+void freeVectorf(fvector_t *fMatrix)
+{
+	free(fMatrix->_data);
+	free(fMatrix);
+}
+
+fcomplex_t* memalloc_1D(uint16_t nRows)
+{
+	return (fcomplex_t *) calloc(nRows,sizeof(fcomplex_t));
+}
+
+float* memalloc_1Df(uint16_t nRows)
+{
+	return (float *) calloc(nRows,sizeof(float));
+}
+
+void matrixAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix)
+{
+	uint16_t iRow,iCol,rCol;
+	if (aMatrix->_rows != bMatrix->_rows)
+	{
+		printf("Unequal matrix sizes !");
+		exit(failed);
+	}
+
+	cMatrix->_rows = aMatrix->_rows;
+	cMatrix->_cols = aMatrix->_cols + bMatrix->_cols;
+	cMatrix->_data = memalloc_2D(cMatrix->_rows,cMatrix->_cols);
+
+	for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+	{
+		rCol = 0;
+		for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+		{
+			cMatrix->_data[iRow][rCol++] = aMatrix->_data[iRow][iCol];
+		}
+		for (iCol = 0;iCol < bMatrix->_cols;iCol ++)
+		{
+			cMatrix->_data[iRow][rCol++] = bMatrix->_data[iRow][iCol];
+		}
+	}
+}
+
+void matrixAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
+{
+	uint16_t iRow,iCol,rCol;
+	cmatrix_t *cMatrix,pMatrix;
+	if (aMatrix->_rows != bMatrix->_rows)
+	{
+		printf("Unequal matrix sizes !");
+		exit(failed);
+	}
+
+	cMatrix = &pMatrix;
+	cMatrix->_rows = aMatrix->_rows;
+	cMatrix->_cols = aMatrix->_cols + bMatrix->_cols;
+	cMatrix->_data = memalloc_2D(cMatrix->_rows,cMatrix->_cols);
+
+	for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+	{
+		rCol = 0;
+		for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+		{
+			cMatrix->_data[iRow][rCol++] = aMatrix->_data[iRow][iCol];
+		}
+		for (iCol = 0;iCol < bMatrix->_cols;iCol ++)
+		{
+			cMatrix->_data[iRow][rCol++] = bMatrix->_data[iRow][iCol];
+		}
+	}
+	freeMatrix(aMatrix);
+	*aMatrix = pMatrix;
+}
+
+void matrixBottomAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix)
+{
+	uint16_t iRow,iCol,rRow;
+	if (aMatrix->_cols != bMatrix->_cols)
+	{
+		printf("Unequal matrix sizes !");
+		exit(failed);
+	}
+
+	cMatrix->_cols = aMatrix->_cols;
+	cMatrix->_rows = aMatrix->_rows + bMatrix->_rows;
+	cMatrix->_data = memalloc_2D(cMatrix->_rows,cMatrix->_cols);
+
+	for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+	{
+		rRow = 0;
+		for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+		{
+			cMatrix->_data[rRow++][iCol] = aMatrix->_data[iRow][iCol];
+		}
+		for (iRow = 0;iRow < bMatrix->_rows;iRow ++)
+		{
+			cMatrix->_data[rRow++][iCol] = bMatrix->_data[iRow][iCol];
+		}
+	}
+}
+
+void matrixBottomAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
+{
+	uint16_t iRow,iCol,rRow;
+	cmatrix_t *cMatrix,pMatrix;
+
+	if (aMatrix->_cols != bMatrix->_cols)
+	{
+		printf("Unequal matrix sizes !");
+		exit(failed);
+	}
+
+	cMatrix = &pMatrix;
+	cMatrix->_cols = aMatrix->_cols;
+	cMatrix->_rows = aMatrix->_rows + bMatrix->_rows;
+	cMatrix->_data = memalloc_2D(cMatrix->_rows,cMatrix->_cols);
+
+	for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+	{
+		rRow = 0;
+		for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+		{
+			cMatrix->_data[rRow++][iCol] = aMatrix->_data[iRow][iCol];
+		}
+		for (iRow = 0;iRow < bMatrix->_rows;iRow ++)
+		{
+			cMatrix->_data[rRow++][iCol] = bMatrix->_data[iRow][iCol];
+		}
+	}
+	freeMatrix(aMatrix);
+	*aMatrix = pMatrix;
 }
 
