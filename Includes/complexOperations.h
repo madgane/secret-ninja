@@ -24,4 +24,6 @@ void matrixAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix);
 void matrixAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix);
 void matrixBottomAppend(cmatrix_t *aMatrix,cmatrix_t *bMatrix,cmatrix_t *cMatrix);
 void matrixBottomAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix);
+void repMat(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t xRows,uint16_t xCols);
+
 #endif /* COMPLEXOPERATIONS_H_ */

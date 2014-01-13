@@ -32,7 +32,7 @@ int main()
 	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
 	updateSystem(&dlConfig,&sysConfig,0);
 
-	sysConfig.schedType = PIPD;
+	sysConfig.schedType = SUCCPROJ;
 
 	for (iUser = 0;iUser < simUsers;iUser ++)
 	{

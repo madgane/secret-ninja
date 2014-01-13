@@ -283,3 +283,4 @@ void getLeftNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix)
 	freeMatrix(&iMatrix);
 	freeMatrix(&ahMatrix);
 }
+

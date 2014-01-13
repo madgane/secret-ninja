@@ -345,3 +345,18 @@ void matrixBottomAppendOwr(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
 	*aMatrix = pMatrix;
 }
 
+void repMat(cmatrix_t *aMatrix,cmatrix_t *bMatrix,uint16_t xRows,uint16_t xCols)
+{
+	uint16_t iRow,iCol;
+	bMatrix->_cols = aMatrix->_cols * xCols;
+	bMatrix->_rows = aMatrix->_rows * xRows;
+	bMatrix->_data = memalloc_2D(bMatrix->_rows,bMatrix->_cols);
+
+	for (iRow = 0;iRow < bMatrix->_rows;iRow ++)
+	{
+		for (iCol = 0;iCol < bMatrix->_cols;iCol ++)
+		{
+			bMatrix->_data[iRow][iCol] = aMatrix->_data[(iRow % aMatrix->_rows)][(iCol % aMatrix->_cols)];
+		}
+	}
+}
