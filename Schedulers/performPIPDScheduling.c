@@ -24,7 +24,7 @@ void performPIPDScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 		}
 
 		maxIndex = maxEntryv(&normVector);
-		matrixCopy(&dlConfig->activeUsers[maxIndex]->channelMatrix[iSB],&gMatrix);
+		normalizeMatrix(&dlConfig->activeUsers[maxIndex]->channelMatrix[iSB],&gMatrix);
 		dlConfig->schedUsers[iSB][0] = dlConfig->activeUsers[maxIndex];
 
 		for (iUser = 1;iUser < muxUsers;iUser ++)
@@ -32,8 +32,8 @@ void performPIPDScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 			for (jUser = 0;jUser < dlConfig->linkedUsers;jUser ++)
 			{
 				tempProd = 1.0;
-				hermMatrix(&dlConfig->activeUsers[jUser]->channelMatrix[iSB],&tMatrix);
-				matrixMult(&gMatrix,&tMatrix,&nMatrix);
+				matrixMultOuter(&gMatrix,&dlConfig->activeUsers[jUser]->channelMatrix[iSB],&nMatrix);
+
 				for (iRow = 0;iRow < gMatrix._rows;iRow ++)
 				{
 					tempProd *= (normVector._data[jUser] - cabs(nMatrix._data[iRow][0]));
@@ -42,7 +42,8 @@ void performPIPDScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 			}
 
 			maxIndex = maxEntryv(&prodVector);
-			matrixBottomAppendOwr(&gMatrix,&dlConfig->activeUsers[maxIndex]->channelMatrix[iSB]);
+			normalizeMatrix(&dlConfig->activeUsers[maxIndex]->channelMatrix[iSB],&tMatrix);
+			matrixBottomAppendOwr(&gMatrix,&tMatrix);
 			dlConfig->schedUsers[iSB][iUser] = dlConfig->activeUsers[maxIndex];
 		}
 	}

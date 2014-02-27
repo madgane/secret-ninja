@@ -19,17 +19,11 @@ void performGreedyScheduling(systemConfig_t *sysConfig,downlinkConfig_t *dlConfi
 			normVector._data[jUser] = getNormOfVector(&dlConfig->activeUsers[jUser]->channelMatrix[iSB]);
 		}
 
-		maxIndex = maxEntryv(&normVector);
-		dlConfig->schedUsers[iSB][0] = dlConfig->activeUsers[maxIndex];
-
-		for (iUser = 1;iUser < muxUsers;iUser ++)
+		for (iUser = 0;iUser < muxUsers;iUser ++)
 		{
-			for (jUser = 0;jUser < dlConfig->linkedUsers;jUser ++)
-			{
-				normVector._data[maxIndex] = 0.0;
-			}
 			maxIndex = maxEntryv(&normVector);
 			dlConfig->schedUsers[iSB][iUser] = dlConfig->activeUsers[maxIndex];
+			normVector._data[maxIndex] = 0.0;
 		}
 	}
 }

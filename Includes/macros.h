@@ -2,6 +2,10 @@
 #ifndef MACROS_H_
 #define MACROS_H_
 
+/* Generals */
+
+#define CPLX (2)
+
 /* LTE constants */
 
 #define N_SC_OVER_PRB (12)
@@ -11,7 +15,7 @@
 
 #define N_FFT (1024)
 #define N_FFT_USED (600)
-#define N_PRB_OVER_SCHBLK (5)
+#define N_PRB_OVER_SCHBLK (50)
 
 /* System Limitations */
 
@@ -22,7 +26,7 @@
 
 /* Derived definitions */
 
-#define MAX_MUX_USERS (4)
+#define MAX_MUX_USERS (8)
 #define N_PRB_OVER_SF (N_FFT_USED / N_SC_OVER_PRB)
 #define N_SCHBLK_OVER_SF (N_PRB_OVER_SF / N_PRB_OVER_SCHBLK)
 

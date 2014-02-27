@@ -284,3 +284,29 @@ void getLeftNullMatrix(cmatrix_t *aMatrix,cmatrix_t *nMatrix)
 	freeMatrix(&ahMatrix);
 }
 
+void normalizeMatrix(cmatrix_t *aMatrix,cmatrix_t *bMatrix)
+{
+	float normOfVec;
+	uint16_t iRow,iCol;
+
+	bMatrix->_cols = aMatrix->_cols;
+	bMatrix->_rows = aMatrix->_rows;
+	bMatrix->_data = memalloc_2D(bMatrix->_rows,bMatrix->_cols);
+
+	normOfVec = getNormOfVector(aMatrix);
+	if (aMatrix->_cols == 1)
+	{
+		for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+		{
+			bMatrix->_data[iRow][0] = aMatrix->_data[iRow][0] / normOfVec;
+		}
+	}
+	else
+	{
+		for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+		{
+			bMatrix->_data[0][iCol] = aMatrix->_data[0][iCol] / normOfVec;
+		}
+	}
+}
+

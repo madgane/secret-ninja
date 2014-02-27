@@ -33,6 +33,46 @@ void matrixMult(cmatrix_t *pMatrix, cmatrix_t *qMatrix, cmatrix_t *rMatrix)
 	}
 }
 
+void matrixMultInner(cmatrix_t *pMatrix, cmatrix_t *qMatrix, cmatrix_t *rMatrix)
+{
+	uint16_t iRow,iCol,iIndex;
+
+	rMatrix->_cols = qMatrix->_cols;
+	rMatrix->_rows = pMatrix->_cols;
+	rMatrix->_data = memalloc_2D(rMatrix->_rows,rMatrix->_cols);
+
+	for (iRow = 0;iRow < pMatrix->_cols;iRow ++)
+	{
+		for (iCol = 0;iCol < qMatrix->_cols;iCol ++)
+		{
+			for (iIndex = 0;iIndex < qMatrix->_rows;iIndex ++)
+			{
+				rMatrix->_data[iRow][iCol] += conj(pMatrix->_data[iIndex][iRow]) * qMatrix->_data[iIndex][iCol];
+			}
+		}
+	}
+}
+
+void matrixMultOuter(cmatrix_t *pMatrix, cmatrix_t *qMatrix, cmatrix_t *rMatrix)
+{
+	uint16_t iRow,iCol,iIndex;
+
+	rMatrix->_cols = qMatrix->_rows;
+	rMatrix->_rows = pMatrix->_rows;
+	rMatrix->_data = memalloc_2D(rMatrix->_rows,rMatrix->_cols);
+
+	for (iRow = 0;iRow < pMatrix->_rows;iRow ++)
+	{
+		for (iCol = 0;iCol < qMatrix->_rows;iCol ++)
+		{
+			for (iIndex = 0;iIndex < qMatrix->_cols;iIndex ++)
+			{
+				rMatrix->_data[iRow][iCol] += pMatrix->_data[iRow][iIndex] * conj(qMatrix->_data[iCol][iIndex]);
+			}
+		}
+	}
+}
+
 void hermMatrix(cmatrix_t *inMatrix,cmatrix_t *outMatrix)
 {
 	uint16_t iRow,iCol;

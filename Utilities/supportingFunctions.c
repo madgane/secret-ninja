@@ -60,6 +60,46 @@ void randomizeDataMatrix(cmatrix_t *aMatrix)
 	}
 }
 
+userConfig_t* createDummyUserWithKnownChannel(uint16_t uID,uint16_t nRxAntenna,uint16_t backloggedPkts,FILE *fptr)
+{
+	uint16_t iSchBlk;
+	userConfig_t *dummyUser;
+	extern systemConfig_t sysConfig;
+
+	dummyUser = (userConfig_t *) malloc(sizeof(userConfig_t));
+
+	dummyUser->userID = uID;
+	dummyUser->queuedPkts = backloggedPkts;
+	dummyUser->nRxAntenna = nRxAntenna;
+
+	for (iSchBlk = 0;iSchBlk < sysConfig.nSBs;iSchBlk ++)
+	{
+		dummyUser->channelMatrix[iSchBlk]._rows = nRxAntenna;
+		dummyUser->channelMatrix[iSchBlk]._cols = sysConfig.nTXAntenna;
+		loadChannelMatrixFromDumps(&dummyUser->channelMatrix[iSchBlk],fptr);
+	}
+
+	return dummyUser;
+}
+
+void loadChannelMatrixFromDumps(cmatrix_t *aMatrix,FILE *fptr)
+{
+	uint16_t iRow,iCol;
+	float cplxData[CPLX];
+	aMatrix->_data = memalloc_2D(aMatrix->_rows,aMatrix->_cols);
+
+	for (iRow = 0;iRow < aMatrix->_rows;iRow ++)
+	{
+		for (iCol = 0;iCol < aMatrix->_cols;iCol ++)
+		{
+			fscanf(fptr,"%f",&cplxData[0]);
+			fscanf(fptr,"%f",&cplxData[1]);
+			__real__ aMatrix->_data[iRow][iCol] = cplxData[0];
+			__imag__ aMatrix->_data[iRow][iCol] = cplxData[1];
+		}
+	}
+}
+
 void displayChannelMatrices(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig)
 {
 	float norm;
@@ -75,3 +115,5 @@ void displayChannelMatrices(systemConfig_t *sysConfig,downlinkConfig_t *dlConfig
 		}
 	}
 }
+
+

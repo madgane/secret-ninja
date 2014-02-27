@@ -16,9 +16,11 @@ void testFunction();
 
 int main()
 {
+	FILE *fptr;
+	srand((unsigned int) 100);
 	uint16_t cellID = 0,iFrameNo,iUser;
 	const uint16_t maxFrames = 1;
-	const uint16_t simUsers = 10;
+	const uint16_t simUsers = 20;
 	uint16_t nTransmit = 4,nReceive = 1;
 	userConfig_t *cUser;
 
@@ -29,17 +31,19 @@ int main()
 
 	QueryPerformanceFrequency(&frequency);
 
+	fptr = fopen("Dumps\\channelDumpFile.dat","r+");
 	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
 	updateSystem(&dlConfig,&sysConfig,0);
 
-	sysConfig.schedType = SUCCPROJ;
+	sysConfig.schedType = PIPD;
 
 	for (iUser = 0;iUser < simUsers;iUser ++)
 	{
-		cUser = createDummyUser(iUser,nReceive,10);
+		cUser = createDummyUserWithKnownChannel(iUser,nReceive,10,fptr);
 		updateDLConfig_User(&dlConfig,cUser);
 	}
 
+	fclose(fptr);
 	for (iFrameNo = 0;iFrameNo < maxFrames;iFrameNo ++)
 	{
 		updateSystem(&dlConfig,&sysConfig,iFrameNo);
@@ -54,10 +58,10 @@ int main()
 		printf("Total Cycles involved - %f Clocks and Time in msec - %f. \n ",(double)frequency.QuadPart,(elapTime * 1e3 / frequency.QuadPart));
 	}
 
+	//displayChannelMatrices(&sysConfig,&dlConfig);
+
 	return (true);
 }
-
-
 
 void testFunction()
 {
@@ -103,11 +107,22 @@ void testFunction()
 
 
 
-//	aMatrix._rows = 4;aMatrix._cols = 4;
-//	bMatrix._rows = 3;bMatrix._cols = 1;
-//
-//	randomizeDataMatrix(&aMatrix);
-//	randomizeDataMatrix(&bMatrix);
+
+
+	aMatrix._rows = 2;aMatrix._cols = 4;
+	bMatrix._rows = 2;bMatrix._cols = 4;
+
+	randomizeDataMatrix(&aMatrix);
+	randomizeDataMatrix(&bMatrix);
+
+	hermMatrix(&bMatrix,&uMatrix);
+
+	matrixMultInner(&aMatrix,&bMatrix,&cMatrix);
+
+	displayMatrix(&aMatrix);displayMatrix(&bMatrix);
+	displayMatrix(&cMatrix);
+
+
 //
 //	displayMatrix(&aMatrix);
 //	getLeftNullMatrix(&aMatrix,&cMatrix);
