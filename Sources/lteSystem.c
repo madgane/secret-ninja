@@ -12,16 +12,19 @@
 
 #define DEBUG_TIMERS (10)
 
+float channelDumps[] = {
+#include "channelDumpFile_1_base.h"
+};
+
 void testFunction();
 
 int main()
 {
-	FILE *fptr;
 	srand((unsigned int) 100);
 	uint16_t cellID = 0,iFrameNo,iUser;
-	const uint16_t maxFrames = 1;
+	const uint16_t maxFrames = 100;
 	const uint16_t simUsers = 20;
-	uint16_t nTransmit = 4,nReceive = 1;
+	uint16_t nTransmit = 4,nReceive = 1,schBlks = 5;
 	userConfig_t *cUser;
 
 	double elapTime;
@@ -31,19 +34,18 @@ int main()
 
 	QueryPerformanceFrequency(&frequency);
 
-	fptr = fopen("Dumps\\channelDumpFile.dat","r+");
-	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
+	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit,schBlks);
 	updateSystem(&dlConfig,&sysConfig,0);
 
 	sysConfig.schedType = PIPD;
 
 	for (iUser = 0;iUser < simUsers;iUser ++)
 	{
-		cUser = createDummyUserWithKnownChannel(iUser,nReceive,10,fptr);
+		cUser = createDummyUser(iUser,nReceive,10);
+		//cUser = createDummyUserWithKnownChannel(iUser,nReceive,10,channelDumps);
 		updateDLConfig_User(&dlConfig,cUser);
 	}
 
-	fclose(fptr);
 	for (iFrameNo = 0;iFrameNo < maxFrames;iFrameNo ++)
 	{
 		updateSystem(&dlConfig,&sysConfig,iFrameNo);
@@ -68,7 +70,7 @@ void testFunction()
 	uint16_t cellID = 0,iFrameNo;
 	const uint16_t maxFrames = 10;
 	const uint16_t simUsers = 100;
-	uint16_t nTransmit = 4,nReceive = 4;
+	uint16_t nTransmit = 4,nReceive = 4,schBlks = 1;
 	uint16_t iSB,iUser;
 	userConfig_t *cUser;
 	fcomplex_t detVal;
@@ -83,7 +85,7 @@ void testFunction()
 
 	QueryPerformanceFrequency(&frequency);
 
-	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit);
+	initializeSystem(&dlConfig,&sysConfig,cellID,nTransmit,schBlks);
 	updateSystem(&dlConfig,&sysConfig,0);
 
 	for (iUser = 0;iUser < simUsers;iUser ++)

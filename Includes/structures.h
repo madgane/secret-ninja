@@ -16,8 +16,8 @@ typedef struct {
 typedef struct {
 	uint16_t userID;
 
-	cmatrix_t channelMatrix[N_SCHBLK_OVER_SF];
-	cmatrix_t precMatrices[N_SCHBLK_OVER_SF];
+	cmatrix_t channelMatrix[MAX_SCHBLK_OVER_SF];
+	cmatrix_t precMatrices[MAX_SCHBLK_OVER_SF];
 
 	uint32_t queuedPkts;
 	uint8_t *userBits;
@@ -34,7 +34,7 @@ typedef struct {
 	uint16_t maxUsers;
 	dlframe_t *cFrame;
 
-	userConfig_t *schedUsers[N_SCHBLK_OVER_SF][MAX_MUX_USERS];
+	userConfig_t *schedUsers[MAX_SCHBLK_OVER_SF][MAX_MUX_USERS];
 
 }downlinkConfig_t;
 

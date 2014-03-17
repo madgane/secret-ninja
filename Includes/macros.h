@@ -15,7 +15,6 @@
 
 #define N_FFT (1024)
 #define N_FFT_USED (600)
-#define N_PRB_OVER_SCHBLK (50)
 
 /* System Limitations */
 
@@ -23,12 +22,15 @@
 
 #define MAX_ACTIVE_USERS (400)
 #define PING_PONG (2)
-
-/* Derived definitions */
-
 #define MAX_MUX_USERS (8)
-#define N_PRB_OVER_SF (N_FFT_USED / N_SC_OVER_PRB)
-#define N_SCHBLK_OVER_SF (N_PRB_OVER_SF / N_PRB_OVER_SCHBLK)
+
+#ifdef _MHZ_10
+	#define MAX_SCHBLK_OVER_SF (10)
+	#define MAX_PRB_OVER_SF	(50)
+#elif _MHZ_20
+	#define MAX_SCHBLK_OVER_SF (20)
+	#define MAX_PRB_OVER_SF	(100)
+#endif
 
 #define MIN(X,Y) ((X)<(Y))?(X):(Y)
 #define MAX(X,Y) ((X)>(Y))?(X):(Y)

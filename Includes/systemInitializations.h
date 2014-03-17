@@ -7,7 +7,7 @@
 extern downlinkConfig_t dlConfig;
 extern systemConfig_t sysConfig;
 
-void initializeSystem(downlinkConfig_t *,systemConfig_t *,uint16_t,uint16_t);
+void initializeSystem(downlinkConfig_t *,systemConfig_t *,uint16_t,uint16_t,uint16_t);
 userConfig_t* createNewUser(uint32_t, cmatrix_t **);
 void updateDLConfig_User(downlinkConfig_t *,userConfig_t *);
 void clearDLConfig(downlinkConfig_t *);

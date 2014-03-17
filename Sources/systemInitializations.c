@@ -8,7 +8,7 @@ ulframe_t uplinkFrame[PING_PONG];
 downlinkConfig_t dlConfig;
 systemConfig_t sysConfig;
 
-void initializeSystem(downlinkConfig_t *dConfig,systemConfig_t *sConfig,uint16_t cellID,uint16_t nTxAntenna)
+void initializeSystem(downlinkConfig_t *dConfig,systemConfig_t *sConfig,uint16_t cellID,uint16_t nTxAntenna,uint16_t nSchBlks)
 {
 	uint32_t iUser;
 
@@ -22,8 +22,8 @@ void initializeSystem(downlinkConfig_t *dConfig,systemConfig_t *sConfig,uint16_t
 	dConfig->frameNumber = 0;
 	dConfig->linkedUsers = 0;
 
-	sConfig->nPRBs = N_PRB_OVER_SF;
-	sConfig->nSBs = N_SCHBLK_OVER_SF;
+	sConfig->nPRBs = MAX_PRB_OVER_SF;
+	sConfig->nSBs = nSchBlks;
 	sConfig->nTXAntenna = nTxAntenna;
 }
 

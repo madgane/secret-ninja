@@ -11,11 +11,11 @@ typedef struct {
 }phyRB_t;
 
 typedef struct {
-	phyRB_t prbElements[N_PRB_OVER_SF];
+	phyRB_t prbElements[MAX_PRB_OVER_SF];
 }dlframe_t;
 
 typedef struct {
-	phyRB_t prbElements[N_PRB_OVER_SF];
+	phyRB_t prbElements[MAX_PRB_OVER_SF];
 }ulframe_t;
 
 #endif /* FRAME_H_ */
